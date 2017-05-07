@@ -21,7 +21,10 @@ namespace OS
         Matrix spriteScale;
         
         Texture2D myBackgroundTexture;
-        List<Tuple<Texture2D,Vector2>> mySprites;
+        Texture2D myTileTexture;
+        Tiles _tiles;
+        List<Tuple<Texture2D, Vector2>> mySprites;
+        List<Tuple<Rectangle, Vector2>> myTiles;
 
         AnimatedSprite mySprite;
         Rectangle myMainFrame;
@@ -51,6 +54,8 @@ namespace OS
             graphics.ApplyChanges();
 
             mySprites = new List<Tuple<Texture2D, Vector2>>();
+            myTiles = new List<Tuple<Rectangle, Vector2>>();
+            _tiles = new Tiles();
 
             base.Initialize();
         }
@@ -71,11 +76,16 @@ namespace OS
             myMainFrame = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height); 
 
             myBackgroundTexture = this.Content.Load<Texture2D>("placeholder_background");
+
+            //load tile texture and the Tile class
+            myTileTexture = this.Content.Load<Texture2D>("tiles");
+            _tiles.Load(this.Content, "tiles", 1, 3);
+
             mySprite.Load(Content, "chest", 4, 2);
             viewport = graphics.GraphicsDevice.Viewport;
 
             //load test map
-            mySprites = new MyMap(this.Content).Map;
+            myTiles = new MyMap(this.Content).Map;
         }
 
         /// <summary>
@@ -119,11 +129,17 @@ namespace OS
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, spriteScale);
             spriteBatch.Draw(myBackgroundTexture, myMainFrame, Color.White);
             
+            //sprites
             foreach(Tuple<Texture2D,Vector2> s in mySprites)
             {
                 spriteBatch.Draw(s.Item1, s.Item2, Color.White);
             }
-
+            // draw tiles
+            foreach(Tuple<Rectangle,Vector2> t in myTiles)
+            {
+                spriteBatch.Draw(myTileTexture, t.Item2, t.Item1, Color.White,
+                0, Vector2.Zero, 1, SpriteEffects.None, 1);
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
