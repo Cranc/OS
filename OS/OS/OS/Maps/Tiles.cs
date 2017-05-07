@@ -5,13 +5,14 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace OS
+namespace OS.Maps
 {
-    class Tiles
+    public class Tiles
     {
         private int frameRowcount;
         private int frameColumncount;
         private Texture2D myTexture;
+        public int tilesize = 32;
 
         public void Load(ContentManager content, 
             string asset, 

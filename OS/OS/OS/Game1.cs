@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using OS.Maps;
 namespace OS
 {
     /// <summary>
@@ -23,6 +24,7 @@ namespace OS
         Texture2D myBackgroundTexture;
         Texture2D myTileTexture;
         Tiles _tiles;
+        TileMap _tileMap;
         List<Tuple<Texture2D, Vector2>> mySprites;
         List<Tuple<Rectangle, Vector2>> myTiles;
 
@@ -49,14 +51,14 @@ namespace OS
             // TODO: Add your initialization logic here
 
             graphics.IsFullScreen = false;
-            graphics.PreferredBackBufferWidth = 1020;
+            graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             graphics.ApplyChanges();
 
             mySprites = new List<Tuple<Texture2D, Vector2>>();
             myTiles = new List<Tuple<Rectangle, Vector2>>();
             _tiles = new Tiles();
-
+            _tileMap = new TileMap(50, (uint)graphics.PreferredBackBufferWidth, (uint)graphics.PreferredBackBufferHeight);
             base.Initialize();
         }
 
@@ -85,7 +87,7 @@ namespace OS
             viewport = graphics.GraphicsDevice.Viewport;
 
             //load test map
-            myTiles = new MyMap(this.Content).Map;
+            myTiles = new MyMap(this.Content, _tiles, _tileMap).Map;
         }
 
         /// <summary>
@@ -135,10 +137,11 @@ namespace OS
                 spriteBatch.Draw(s.Item1, s.Item2, Color.White);
             }
             // draw tiles
+            float scale = (float)_tileMap.GetTileSize() / _tiles.tilesize;
             foreach(Tuple<Rectangle,Vector2> t in myTiles)
             {
                 spriteBatch.Draw(myTileTexture, t.Item2, t.Item1, Color.White,
-                0, Vector2.Zero, 1, SpriteEffects.None, 1);
+                0, Vector2.Zero, new Vector2(scale, scale), SpriteEffects.None, 1);
             }
             spriteBatch.End();
 
